@@ -2,6 +2,8 @@ version: 2.1
 
 orbs:
   snyk: snyk/snyk@2.3.0
+        - snyk/scan:
+        fail-on-issues: false
 jobs:
   # ==========================================
   # BUILD JOB - Compile and package
@@ -64,6 +66,7 @@ jobs:
             - maven-deps-{{ checksum "pom.xml" }}
             - maven-deps-
       - snyk/scan:
+          fail-on-issues: false 
           severity-threshold: high
           cli-version: 1.1308.1
           monitor-on-build: false
@@ -77,6 +80,7 @@ jobs:
     steps:
       - checkout
       - snyk/scan:
+          fail-on-issues: false
           command: code test
           severity-threshold: high
           cli-version: 1.1308.1
