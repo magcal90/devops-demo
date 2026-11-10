@@ -2,8 +2,7 @@ version: 2.1
 
 orbs:
   snyk: snyk/snyk@2.3.0
-        - snyk/scan:
-        fail-on-issues: false
+  
 jobs:
   # ==========================================
   # BUILD JOB - Compile and package
