@@ -72,6 +72,25 @@ jobs:
             echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
             echo "Pushing image to Docker Hub..."
             docker push $DOCKER_USERNAME/devops-demo:latest
+  
+  # ==========================================
+  # DEPLOY JOB - Redeploy on Render with the Render CLI
+  # ==========================================
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Install the Render CLI
+          command: |
+            curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$BASH_ENV"
+      - run:
+          name: Redeploy latest image on Render and wait
+          command: |
+            echo "Asking Render to redeploy the latest image..."
+            render deploys create "$RENDER_SERVICE_ID" --wait --confirm --output text
+            echo "The new version is live on Render."
 
 # ==========================================
 # WORKFLOW - Run jobs in sequence
@@ -87,3 +106,6 @@ workflows:
           context: docker-hub
           requires:
             - test
+      - deploy:
+          requires:
+            - publish
